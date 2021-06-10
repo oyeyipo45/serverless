@@ -1,0 +1,15 @@
+{
+  "name": "serverless",
+  "description": "",
+  "version": "0.1.0",
+  "dependencies": {
+    "mocha": "^9.0.0"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.925.0",
+    "aws-sdk-mock": "^5.1.0",
+    "serverless-mocha": "^1.12.0",
+    "serverless-offline": "^7.0.0",
+    "serverless-pseudo-parameters": "^2.5.0"
+  }
+}
