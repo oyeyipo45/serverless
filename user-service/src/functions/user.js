@@ -1,12 +1,36 @@
 'use strict';
 const AWS = require('aws-sdk');
-const ServerlessUsers = require('./user');
+const ServerlessUsers = require('../schema/users');
+const { MongoClient } = require('mongodb');
+const secrets = require('../../secrets.json');
 
+
+
+const mongoose = require('mongoose');
+
+mongoose
+  .connect(secrets.MONGODB_URI, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true,
+  })
+  .then((res) => {
+    console.log('DB Connected!');
+  })
+  .catch((err) => {
+    console.log(Error, err.message);
+  });
 
 
 
 module.exports.createUser = async (event, context) => {
+
+  //await connectToDatabase()
+
   const body = JSON.parse(event.body);
+
+  console.log(body)
   const username = body.username;
   const password = body.password;
 
@@ -16,10 +40,15 @@ module.exports.createUser = async (event, context) => {
   };
 
   try {
-    const message = {
-      data: res,
-      message: 'success',
-    };
+   
+
+    const result = await ServerlessUsers.create(res);
+
+
+     const message = {
+       data: result,
+       message: 'success',
+     };
 
     let gg = {
       statusCode: 200,
@@ -44,6 +73,7 @@ module.exports.createUser = async (event, context) => {
 
 
 module.exports.findUsers = async (event) => {
+
   try {
     const result = await ServerlessUsers.find();
     return {
@@ -53,8 +83,6 @@ module.exports.findUsers = async (event) => {
   } catch (e) {
     console.error(e);
   }
-  // Use this code if you don't use the http event with the LAMBDA-PROXY integration
-  // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
 };
 
 
@@ -100,3 +128,27 @@ module.exports.findUsers = async (event) => {
 //     return new Error('There was an error putting the new item');
 //   }
 // };
+
+
+// let cachedDB = null
+
+// async function connectToDatabase () {
+//     if (cachedDB) {
+//         console.log('use existing connection')
+//         return Promise.resolve(cachedDB);
+//     } else {
+//         return MongoClient.connect(secrets.MONGODB_URI, {
+//             native_parser: true,
+//             useUnifiedTopology: true
+//         })
+//             .then((client) => {
+//                 let db = client.db('serverlessTest')
+//                 console.log("New Database connection");
+//                 cachedDB = db
+//                 return cachedDB
+//             }).catch((error) => {
+//             console.log("Mongo connection error");
+//             console.log(error);
+//         })
+//     }
+// }

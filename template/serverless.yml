@@ -127,5 +127,6 @@ plugins:
   - serverless-pseudo-parameters
   - serverless-mocha
 custom:
-  serverless-mocha-plugin
-    testTemplate: templates/test
+  serverless-mocha-plugin:
+    testTemplate: templates/test-template.ejs
+    functionTemplate: templates/function-template.ejs
